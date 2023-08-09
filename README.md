@@ -6,7 +6,7 @@ Example in conda:- </br>
 <code>conda actiavate virtual_paint</code></br></br>
 Then install required libraries using:-</br>
 <code> pip install -r requirements.txt</code></br></br>
-Then to run the application using :-</br>
+Then run the application using :-</br>
 <code>virtual_paint.py</code></br></br>
 
 
