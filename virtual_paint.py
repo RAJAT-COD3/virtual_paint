@@ -3,6 +3,7 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import random
+import time
 
 class ColorRect():
     def __init__(self, x, y, w, h, color, text='', alpha = 0.5):
@@ -55,12 +56,12 @@ px,py = 0,0
 color = (255,0,0)
 #####
 brushSize = 5
-eraserSize = 20
+eraserSize = 30
 ####
 
 ########### creating colors ########
 # Colors button
-colorsBtn = ColorRect(200, 0, 100, 100, (120,255,0), 'Colors')
+colorsBtn = ColorRect(200, 0, 100, 100, (120, 255, 0), 'Colors')
 
 colors = []
 #random color
@@ -91,7 +92,7 @@ for i, penSize in enumerate(range(5,25,5)):
 penBtn = ColorRect(1100, 0, 100, 50, color, 'Pen')
 
 # white board button
-boardBtn = ColorRect(50, 0, 100, 100, (255,255,0), 'Board')
+boardBtn = ColorRect(50, 0, 100, 100, (255, 255, 0), 'Board')
 
 #define a white board to draw on
 whiteBoard = ColorRect(0, 120, 1300, 732, (255,255,255),alpha = 0.6)
@@ -152,7 +153,7 @@ while True:
                 coolingCounter = 10
                 colorsBtn.alpha = 0
                 hideColors = False
-                colorsBtn.text = 'Colors' if hideColors else 'Hide'
+                colorsBtn.text = 'Colors' if hideColors else 'Colors'
             else:
                 colorsBtn.alpha = 0.5
             
@@ -162,16 +163,17 @@ while True:
                 penBtn.alpha = 0
                 hidePenSizes = False if hidePenSizes else True
                 penBtn.text = 'Pen' if hidePenSizes else 'Hide'
+                time.sleep(0.1)
             else:
                 penBtn.alpha = 0.5
 
-            
+
             #white board button
             if boardBtn.isOver(x, y) and not coolingCounter:
                 coolingCounter = 10
                 boardBtn.alpha = 0
                 hideBoard = False
-                boardBtn.text = 'Board' if hideBoard else 'Hide'
+                boardBtn.text = 'Board' if hideBoard else 'Board'
 
             else:
                 boardBtn.alpha = 0.5
@@ -204,7 +206,7 @@ while True:
     cv2.rectangle(frame, (boardBtn.x, boardBtn.y), (boardBtn.x +boardBtn.w, boardBtn.y+boardBtn.h), (255,255,255), 2)
 
     #put the white board on the frame
-    if not hideBoard:       
+    if not hideBoard:
         whiteBoard.drawRect(frame)
         ########### moving the draw to the main image #########
         canvasGray = cv2.cvtColor(canvas, cv2.COLOR_BGR2GRAY)
@@ -239,5 +241,10 @@ while True:
     k= cv2.waitKey(1)
     if k == ord('q'):
         break
+    elif k == ord('c'):
+        clear.alpha = 0
+        canvas = np.zeros((720,1280,3), np.uint8)
+        hidePenSizes=True
+        penBtn.text = 'Pen' if hidePenSizes else 'Hide'
 cap.release()
 cv2.destroyAllWindows()
