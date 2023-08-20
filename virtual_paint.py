@@ -4,6 +4,7 @@ import mediapipe as mp
 import numpy as np
 import random
 import time
+from datetime import datetime
 
 class ColorRect():
     def __init__(self, x, y, w, h, color, text='', alpha = 0.5):
@@ -44,11 +45,11 @@ detector = HandTracker(detectionCon=0.8)
 
 #initilize the camera 
 cap = cv2.VideoCapture(0)
-cap.set(3, 1280)
-cap.set(4, 720)
+cap.set(3,1920)
+cap.set(4,1080)
 
 # creating canvas to draw on it
-canvas = np.zeros((720,1280,3), np.uint8)
+canvas = np.zeros((1080,1920,3), np.uint8)
 
 # define a previous point to be used with drawing a line
 px,py = 0,0
@@ -61,7 +62,7 @@ eraserSize = 30
 
 ########### creating colors ########
 # Colors button
-colorsBtn = ColorRect(200, 0, 100, 100, (120, 255, 0), 'Colors')
+colorsBtn = ColorRect(400, 0, 100, 100, (120, 255, 0), 'Colors')
 
 colors = []
 #random color
@@ -69,39 +70,38 @@ b = int(random.random()*255)-1
 g = int(random.random()*255)
 r = int(random.random()*255)
 print(b,g,r)
-colors.append(ColorRect(300,0,100,100, (b,g,r)))
+colors.append(ColorRect(500,0,100,100, (b,g,r)))
 #red
-colors.append(ColorRect(400,0,100,100, (0,0,255)))
+colors.append(ColorRect(600,0,100,100, (0,0,255)))
 #blue
-colors.append(ColorRect(500,0,100,100, (255,0,0)))
+colors.append(ColorRect(700,0,100,100, (255,0,0)))
 #green
-colors.append(ColorRect(600,0,100,100, (0,255,0)))
+colors.append(ColorRect(800,0,100,100, (0,255,0)))
 #yellow
-colors.append(ColorRect(700,0,100,100, (0,255,255)))
+colors.append(ColorRect(900,0,100,100, (0,255,255)))
 #erase (black)
-colors.append(ColorRect(800,0,100,100, (0,0,0), "Eraser"))
+colors.append(ColorRect(1000,0,100,100, (0,0,0), "Eraser"))
 
 #clear
-clear = ColorRect(900,0,100,100, (100,100,100), "Clear")
+clear = ColorRect(1100,0,100,100, (100,100,100), "Clear")
 
 ########## pen sizes #######
 pens = []
 for i, penSize in enumerate(range(5,25,5)):
-    pens.append(ColorRect(1100,50+100*i,100,100, (50,50,50), str(penSize)))
+    pens.append(ColorRect(1400,50+100*i,100,100, (50,50,50), str(penSize)))
 
-penBtn = ColorRect(1100, 0, 100, 50, color, 'Pen')
+penBtn = ColorRect(1400, 0, 100, 50, color, 'Pen')
 
 # white board button
-boardBtn = ColorRect(50, 0, 100, 100, (255, 255, 0), 'Board')
+boardBtn = ColorRect(150, 0, 100, 100, (255, 255, 0), 'Board')
 
 #define a white board to draw on
-whiteBoard = ColorRect(0, 120, 1300, 732, (255,255,255),alpha = 0.6)
+whiteBoard = ColorRect(0, 120, 1370, 732, (255,255,255),alpha = 0.6)
 
 coolingCounter = 20
 hideBoard = False
 hideColors = False
 hidePenSizes = True
-saving_mode = False
 
 while True:
 
@@ -112,7 +112,7 @@ while True:
     ret, frame = cap.read()
     if not ret:
         break
-    frame = cv2.resize(frame, (1280, 720))
+    frame = cv2.resize(frame, (1920, 1080))
     frame = cv2.flip(frame, 1)
 
     detector.findHands(frame)
@@ -145,7 +145,9 @@ while True:
                 #Clear 
                 if clear.isOver(x, y):
                     clear.alpha = 0
-                    canvas = np.zeros((720,1280,3), np.uint8)
+                    canvas = np.zeros((1080,1920,3), np.uint8)
+                    hidePenSizes=True
+                    penBtn.text = 'Pen' if hidePenSizes else 'Hide'
                 else:
                     clear.alpha = 0.5
             
@@ -244,14 +246,12 @@ while True:
         break
     elif k == ord('c'):
         clear.alpha = 0
-        canvas = np.zeros((720,1280,3), np.uint8)
+        canvas = np.zeros((1080,1920,3), np.uint8)
         hidePenSizes=True
         penBtn.text = 'Pen' if hidePenSizes else 'Hide'
+        # penSize = 5
     elif k == ord('s'):  # Press 's' to start saving mode
-        saving_mode = not saving_mode
-        print("Saving mode:", saving_mode)
-    elif saving_mode and k == 13:  # Press Enter to save the drawing
-        filename = input("Enter filename to save: ")
+        filename = datetime.now().strftime("%Y%m%d_%H%M%S")
         cv2.imwrite(filename + '.png', canvas)
         print("Drawing saved as", filename + '.png')
 cap.release()

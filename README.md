@@ -9,6 +9,8 @@ Then install required libraries using:-</br>
 Then run the application using :-</br>
 <code>virtual_paint.py</code></br></br>
 
-
+Press <code>q</code> to exit</br>
+Press <code>c</code> to clear the board</br>
+Press <code>s</code> to save the current board
 
 
