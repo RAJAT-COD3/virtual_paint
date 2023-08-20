@@ -104,17 +104,6 @@ hidePenSizes = True
 saving_mode = False
 
 while True:
-    
-     k = cv2.waitKey(1)
-    if k == ord('q'):
-        break
-    elif k == ord('s'):  # Press 's' to start saving mode
-        saving_mode = not saving_mode
-        print("Saving mode:", saving_mode)
-    elif saving_mode and k == 13:  # Press Enter to save the drawing
-        filename = input("Enter filename to save: ")
-        cv2.imwrite(filename + '.png', canvas)
-        print("Drawing saved as", filename + '.png')
 
     if coolingCounter:
         coolingCounter -=1
@@ -258,5 +247,12 @@ while True:
         canvas = np.zeros((720,1280,3), np.uint8)
         hidePenSizes=True
         penBtn.text = 'Pen' if hidePenSizes else 'Hide'
+    elif k == ord('s'):  # Press 's' to start saving mode
+        saving_mode = not saving_mode
+        print("Saving mode:", saving_mode)
+    elif saving_mode and k == 13:  # Press Enter to save the drawing
+        filename = input("Enter filename to save: ")
+        cv2.imwrite(filename + '.png', canvas)
+        print("Drawing saved as", filename + '.png')
 cap.release()
 cv2.destroyAllWindows()
